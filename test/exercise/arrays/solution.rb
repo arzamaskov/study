@@ -2,11 +2,8 @@ module Exercise
   module Arrays
     class << self
       def replace(array)
-        result = []
-        array.each do |item|
-          result << (item.positive? ? array.max : item)
-        end
-        result
+        max = array.reduce { |larger, item| item > larger ? item : larger }
+        array.map { |item| item.positive? ? max : item }
       end
 
       def search(array, query)
