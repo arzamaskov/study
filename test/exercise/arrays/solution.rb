@@ -7,23 +7,19 @@ module Exercise
       end
 
       def search(array, query)
-        left = -1
-        right = array.size
+        return -1 if array.size.zero? || (array.size == 1 && array.first != query)
 
-        while right - left > 1
-          middle = left + ((right - left) / 2)
+        left = 0
+        right = array.size - 1
+        middle = left + ((right - left) / 2)
 
-          if array[middle] >= query
-            right = middle
-          else
-            left = middle
-          end
-        end
+        return middle if query == array[middle]
 
-        if array[right] == query
-          right
+        if query > array[middle]
+          counter = search(array.slice(middle + 1, right), query)
+          counter == -1 ? -1 : (middle + 1) + counter
         else
-          -1
+          search(array.slice(left, middle), query)
         end
       end
     end
