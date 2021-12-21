@@ -1,26 +1,31 @@
 module Exercise
   module Arrays
     class << self
+      def get_max(array)
+        array.reduce { |larger, item| item > larger ? item : larger }
+      end
+
       def replace(array)
-        max = array.reduce { |larger, item| item > larger ? item : larger }
+        max = get_max(array)
         array.map { |item| item.positive? ? max : item }
       end
 
       def search(array, query)
         return -1 if array.size.zero? || (array.size == 1 && array.first != query)
 
-        left = 0
-        right = array.size - 1
-        middle = left + ((right - left) / 2)
+        iter = lambda do |left, right|
+          middle = left + ((right - left) / 2)
 
-        return middle if query == array[middle]
+          if left >= right
+            return array[left] == query ? left : -1
+          end
 
-        if query > array[middle]
-          counter = search(array.slice(middle + 1, right), query)
-          counter == -1 ? -1 : (middle + 1) + counter
-        else
-          search(array.slice(left, middle), query)
+          return middle if query == array[middle]
+
+          return array[middle] > query ? iter.call(left, middle) : iter.call(middle + 1, right)
         end
+
+        iter.call(0, array.size - 1)
       end
     end
   end
