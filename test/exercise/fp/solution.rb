@@ -14,8 +14,7 @@ module Exercise
       end
 
       def rating(array)
-        films = get_films_by_rating(array)
-        films = get_films_by_country(films)
+        films = get_films_by_country(get_films_by_rating(array))
         rating_kinopoisk = films.map { |film| film['rating_kinopoisk'].to_f }
         rating_kinopoisk.reduce(:+) / rating_kinopoisk.size
       end
