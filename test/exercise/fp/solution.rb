@@ -4,13 +4,13 @@ module Exercise
       # Обратиться к параметрам фильма можно так:
       # film["name"], film["rating_kinopoisk"], film["rating_imdb"],
       # film["genres"], film["year"], film["access_level"], film["country"]
-      def validate(film)
+      def film_filter(film)
         film if film['country'] && film['country'].split(',').size > 1 && !film['rating_kinopoisk'].to_f.zero?
       end
 
       def rating(array)
-        validated_films = array.map { |film| validate(film) }.compact
-        ratings_kinopoisk = validated_films.map { |film| film['rating_kinopoisk'].to_f }.compact
+        filtered_films = array.map { |film| film_filter(film) }.compact
+        ratings_kinopoisk = filtered_films.map { |film| film['rating_kinopoisk'].to_f }.compact
         ratings_kinopoisk.reduce(:+) / ratings_kinopoisk.size
       end
 
