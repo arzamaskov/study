@@ -6,7 +6,7 @@ module Exercise
 
       # Написать свою функцию my_each
       def my_each(&block)
-        my_reduce([]) do |acc, element|
+        my_reduce(MyArray.new) do |acc, element|
           acc << block.call(element)
         end
         self
@@ -14,44 +14,33 @@ module Exercise
 
       # Написать свою функцию my_map
       def my_map(&block)
-        new_collection = MyArray.new
-        collection = self
-
-        collection.my_each do |element|
-          new_collection << block.call(element)
+        my_reduce(MyArray.new) do |acc, element|
+          acc << block.call(element)
         end
-
-        new_collection
       end
 
       # Написать свою функцию my_compact
       def my_compact
-        new_collection = MyArray.new
-        collection = self
-
-        collection.my_each do |element|
-          new_collection << element unless element.nil?
+        my_reduce(MyArray.new) do |acc, element|
+          element.nil? ? acc : acc << element
         end
-
-        new_collection
       end
 
       # Написать свою функцию my_reduce
       def my_reduce(acc = nil, &block)
         collection = self
-        acc, *collection = collection if acc.nil?
+        if acc.nil?
+          acc, *rest = collection
+          collection = MyArray.new(rest)
+        end
 
-        my_iterator(collection, acc, &block)
-      end
-
-      def my_iterator(collection, acc, &block)
         return acc if collection.empty?
 
         first, *rest = collection
-
+        rest = MyArray.new(rest)
         acc1 = block.call(acc, first)
 
-        my_iterator(rest, acc1, &block)
+        rest.my_reduce(acc1, &block)
       end
     end
   end
