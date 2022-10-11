@@ -6,9 +6,12 @@ module Exercise
 
       # Написать свою функцию my_each
       def my_each(&block)
-        my_reduce(MyArray.new) do |acc, element|
-          acc << block.call(element)
-        end
+        return if empty?
+
+        first, *rest = self
+        block.call(first)
+        MyArray.new(rest).my_each(&block)
+
         self
       end
 
@@ -28,19 +31,19 @@ module Exercise
 
       # Написать свою функцию my_reduce
       def my_reduce(acc = nil, &block)
-        collection = self
         if acc.nil?
-          acc, *rest = collection
-          collection = MyArray.new(rest)
+          acc, *collection = self
+        else
+          collection = self
         end
+
+        first, *rest = collection
 
         return acc if collection.empty?
 
-        first, *rest = collection
-        rest = MyArray.new(rest)
-        acc1 = block.call(acc, first)
+        new_acc = block.call(acc, first)
 
-        rest.my_reduce(acc1, &block)
+        MyArray.new(rest).my_reduce(new_acc, &block)
       end
     end
   end
