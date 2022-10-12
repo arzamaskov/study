@@ -31,19 +31,13 @@ module Exercise
 
       # Написать свою функцию my_reduce
       def my_reduce(acc = nil, &block)
-        if acc.nil?
-          acc, *collection = self
-        else
-          collection = self
-        end
+        first, *rest = self
 
-        first, *rest = collection
+        return acc if empty?
 
-        return acc if collection.empty?
+        acc = acc.nil? ? first : block.call(acc, first)
 
-        new_acc = block.call(acc, first)
-
-        MyArray.new(rest).my_reduce(new_acc, &block)
+        MyArray.new(rest).my_reduce(acc, &block)
       end
     end
   end
